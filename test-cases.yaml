@@ -1,0 +1,9 @@
+designer-run:
+  name: Dsc setup
+  description: The values used with ▶ Run in the designer.
+  params:
+    er_connection:
+      data_source:
+        name: Wildlife Dynamics
+    workflow_details:
+      name: JHN

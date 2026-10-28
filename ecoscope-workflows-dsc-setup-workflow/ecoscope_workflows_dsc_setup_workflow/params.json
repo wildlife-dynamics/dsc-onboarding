@@ -1,0 +1,75 @@
+{
+  "properties": {
+    "er_connection": {
+      "additionalProperties": false,
+      "properties": {
+        "data_source": {
+          "$ref": "#/$defs/EarthRangerConnection",
+          "title": "",
+          "description": "Select one of your configured data sources."
+        }
+      },
+      "required": [
+        "data_source"
+      ],
+      "type": "object",
+      "title": "Connect to EarthRanger"
+    },
+    "site_setup": {
+      "additionalProperties": false,
+      "properties": {
+        "template": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/EarthRangerConnection"
+            }
+          ],
+          "default": null,
+          "title": "Template conservancy",
+          "description": "The conservancy whose form layouts, field titles and icons the new setup copies. The fields and event types themselves are always the shared DSC schema. Leave empty to use Enarau's."
+        }
+      },
+      "required": [],
+      "type": "object",
+      "title": "Set Up DSC"
+    },
+    "workflow_details": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Workflow Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "type": "object",
+      "description": "Add information that will help to differentiate this workflow from another.",
+      "title": "Set Workflow Details"
+    }
+  },
+  "$defs": {
+    "EarthRangerConnection": {
+      "properties": {
+        "name": {
+          "title": "Data Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "EarthRangerConnection",
+      "type": "object"
+    }
+  },
+  "uiSchema": {
+    "ui:order": [
+      "er_connection",
+      "site_setup",
+      "workflow_details"
+    ]
+  },
+  "additionalProperties": false
+}

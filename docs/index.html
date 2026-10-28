@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dsc setup</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="bar">
+      <a class="brand" href="index.html">Dsc setup</a>
+      <nav>
+        <a href="index.html" class="active">Overview</a>
+        <a href="user-guide.html">User Guide</a>
+        <a href="technical-guide.html">Technical Guide</a>
+        <a href="troubleshooting.html">Troubleshooting</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <h1>Dsc setup</h1>
+    <p class="lede">Dsc setup</p>
+
+    <div class="card-grid">
+      <a class="card" href="user-guide.html">
+        <h3>User Guide</h3>
+        <p>Loading the workflow, connecting its data sources and filling in its settings.</p>
+      </a>
+      <a class="card" href="technical-guide.html">
+        <h3>Technical Guide</h3>
+        <p>Each step of the workflow, the task packages it uses, and how to recompile and test it.</p>
+      </a>
+      <a class="card" href="troubleshooting.html">
+        <h3>Troubleshooting</h3>
+        <p>Common errors while configuring or running the workflow, and how to resolve them.</p>
+      </a>
+    </div>
+
+    <h2>What it does</h2>
+    <table>
+      <thead><tr><th>Step</th><th>What it does</th></tr></thead>
+      <tbody><tr><td><strong>Connect to EarthRanger</strong></td><td></td></tr><tr><td><strong>Set Up DSC</strong></td><td>Create the Distance Sampling Count setup an EarthRanger site is missing: an event category (if the site has none), the Distance Count patrol type, both event types with their fields and form layouts, the transect choices and the DSC_Transects feature group. Species and team members aren&#x27;t created; they are set up in EarthRanger.</td></tr><tr><td><strong>Count Items Still to Create</strong></td><td>The number of rows whose status is one of `statuses`, e.g. the checks that failed. Rows that describe the run (Site, Run, IDs) have status Info, so they&#x27;re only counted when Info is asked for.</td></tr><tr><td><strong>Fetch Transects</strong></td><td>The site&#x27;s DSC_Transects features (name and geometry, EPSG:4326), read-only. Empty when there is no group or it has no features yet.</td></tr><tr><td><strong>Persist Setup Table</strong></td><td>Persist dataframe to a file or cloud storage object.</td></tr><tr><td><strong>Count Created Items</strong></td><td>The number of rows whose status is one of `statuses`, e.g. the checks that failed. Rows that describe the run (Site, Run, IDs) have status Info, so they&#x27;re only counted when Info is asked for.</td></tr><tr><td><strong>Still to Create Widget</strong></td><td>Create a single value widget with a single view.</td></tr><tr><td><strong>Check DSC Setup</strong></td><td>Check that an EarthRanger site has the Distance Sampling Count setup new conservancies need: the Distance Count patrol type, both event types and their fields, the species and transect choice lists, and the DSC_Transects feature group with one correctly named transect per choice. Read-only.</td></tr><tr><td><strong>Transect Labels</strong></td><td>One point per transect, on the line, with its name in a `label` column, for a text layer.</td></tr><tr><td><strong>Transect Map View</strong></td><td>A map view framing the transects. Takes the transects directly, not in a list, so the step can be skipped when there are none.</td></tr><tr><td><strong>Transect Lines Layer</strong></td><td>Creates a GeoJSON layer definition based on the provided configuration.</td></tr><tr><td><strong>Persist Checklist</strong></td><td>Persist dataframe to a file or cloud storage object.</td></tr><tr><td><strong>Transect Names Layer</strong></td><td>Creates a text layer definition based on the provided configuration.</td></tr><tr><td><strong>Draw Onboarding Progress</strong></td><td>An HTML card showing where the site is in DSC onboarding: one step per stage, ticked when its checks pass, with the current step highlighted. Sites surveyed before the rules show their differences in amber.</td></tr><tr><td><strong>Next Steps</strong></td><td>Markdown: what this run did, then one plain instruction per failed check (and warnings worth a look), or the next step when nothing is left to fix.</td></tr><tr><td><strong>Format Checklist</strong></td><td>The checklist for reading: grouped by area, failures first within each, with a symbol on each status and, when the setup table is given, a This run column (Created, Would create, Already there, …).</td></tr><tr><td><strong>Count Failed Checks</strong></td><td>The number of rows whose status is one of `statuses`, e.g. the checks that failed. Rows that describe the run (Site, Run, IDs) have status Info, so they&#x27;re only counted when Info is asked for.</td></tr><tr><td><strong>Count Warnings</strong></td><td>The number of rows whose status is one of `statuses`, e.g. the checks that failed. Rows that describe the run (Site, Run, IDs) have status Info, so they&#x27;re only counted when Info is asked for.</td></tr><tr><td><strong>Checks Passing</strong></td><td>The share of checks that don&#x27;t fail, out of those that pass, warn or fail (information isn&#x27;t counted).</td></tr><tr><td><strong>Analysis IDs</strong></td><td>Markdown: the two IDs DSC Analysis needs for this site, ready to copy.</td></tr><tr><td><strong>Base Maps</strong></td><td></td></tr><tr><td><strong>Draw Transect Map</strong></td><td>Creates a map based on the provided layer definitions and configuration.</td></tr><tr><td><strong>Persist Onboarding Progress</strong></td><td>Persist text to a file or cloud storage object.</td></tr><tr><td><strong>Next Steps Widget</strong></td><td>Create a text widget with a single view.</td></tr><tr><td><strong>Draw Checklist Table</strong></td><td>Creates an HTML table of the dataframe, like draw_table, with rows coloured by a status column.</td></tr><tr><td><strong>Analysis IDs Widget</strong></td><td>Create a text widget with a single view.</td></tr><tr><td><strong>Persist Checklist Table HTML</strong></td><td>Persist text to a file or cloud storage object.</td></tr><tr><td><strong>Onboarding Progress Widget</strong></td><td>Create a table widget with a single view.</td></tr><tr><td><strong>Created Widget</strong></td><td>Create a single value widget with a single view.</td></tr><tr><td><strong>Warnings Widget</strong></td><td>Create a single value widget with a single view.</td></tr><tr><td><strong>Persist Transect Map</strong></td><td>Persist text to a file or cloud storage object.</td></tr><tr><td><strong>Checklist Widget</strong></td><td>Create a table widget with a single view.</td></tr><tr><td><strong>Failed Checks Widget</strong></td><td>Create a single value widget with a single view.</td></tr><tr><td><strong>Checks Passing Widget</strong></td><td>Create a single value widget with a single view.</td></tr><tr><td><strong>Set Workflow Details</strong></td><td>Add information that will help to differentiate this workflow from another.</td></tr><tr><td><strong>Transect Map Widget</strong></td><td>Create a map widget with a single view.</td></tr><tr><td><strong>Gather Dashboard</strong></td><td></td></tr></tbody>
+    </table>
+
+    <h2>Requirements</h2>
+    <ul><li>Access to a <strong>EarthRanger</strong> data source, set up as a connection</li></ul>
+
+    <h2>Get started</h2>
+    <p>New to the workflow? Start with the <a href="user-guide.html">User Guide</a>. Running into an error? Check <a href="troubleshooting.html">Troubleshooting</a> first.</p>
+  </main>
+
+  <footer class="site-footer">
+    <p>Dsc setup &middot; Wildlife Dynamics</p>
+  </footer>
+</body>
+</html>
