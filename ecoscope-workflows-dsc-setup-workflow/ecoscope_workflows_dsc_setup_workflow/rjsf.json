@@ -1,5 +1,25 @@
 {
   "properties": {
+    "workflow_details": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Workflow Name",
+          "type": "string"
+        },
+        "description": {
+          "default": "",
+          "title": "Workflow Description",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "type": "object",
+      "description": "Add information that will help to differentiate this workflow from another.",
+      "title": "Set Workflow Details"
+    },
     "er_connection": {
       "additionalProperties": false,
       "properties": {
@@ -33,24 +53,6 @@
       "required": [],
       "type": "object",
       "title": "DSC Setup"
-    },
-    "workflow_details": {
-      "additionalProperties": false,
-      "properties": {
-        "name": {
-          "title": "Workflow Name",
-          "type": "string"
-        }
-      },
-      "required": [
-        "name"
-      ],
-      "type": "object",
-      "description": "Add information that will help to differentiate this workflow from another.",
-      "title": "Set Workflow Details"
-    },
-    "base_map_defs": {
-      "title": "Transect Map"
     }
   },
   "$defs": {
@@ -69,6 +71,12 @@
     }
   },
   "uiSchema": {
+    "workflow_details": {
+      "ui:order": [
+        "name",
+        "description"
+      ]
+    },
     "ui:order": [
       "workflow_details",
       "er_connection",

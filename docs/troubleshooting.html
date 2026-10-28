@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Troubleshooting · Dsc setup</title>
+  <title>Troubleshooting · DSC Setup</title>
   <link rel="stylesheet" href="assets/style.css" />
 </head>
 <body>
   <header class="site-header">
     <div class="bar">
-      <a class="brand" href="index.html">Dsc setup</a>
+      <a class="brand" href="index.html">DSC Setup</a>
       <nav>
         <a href="index.html">Overview</a>
         <a href="user-guide.html">User Guide</a>
@@ -21,7 +21,7 @@
 
   <main>
     <h1>Troubleshooting</h1>
-    <p class="lede">Common issues while configuring, running or changing Dsc setup, and how to resolve them.</p>
+    <p class="lede">Common issues while configuring, running or changing DSC Setup, and how to resolve them.</p>
 
     <h2>Configuration &amp; connections</h2>
 
@@ -31,8 +31,40 @@
     </div>
 
     <div class="error-block">
-      <p class="symptom">The run returns no data</p>
-      <p>Names typed into the settings (a subject group, an event type) must match the data source exactly, including capitals. Widen the time range if it's short.</p>
+      <p class="symptom">Set Up DSC fails with <code>TypeError: '&gt;=' not supported between instances of 'NoneType' and 'int'</code></p>
+      <p>The build has a task package from before the fix that lets <em>Number of transects</em> be left empty. Rebuild <code>ecoscope-workflows-ext-distance-sample-counts</code> and recompile this workflow. Nothing was created on the site: the run stopped before the step began.</p>
+    </div>
+
+    <h2>Setting up a site</h2>
+
+    <div class="error-block">
+      <p class="symptom">Items are marked <em>Failed</em> and the rest <em>Not run</em></p>
+      <p>An error stops the run at the first item that couldn't be created. The checklist row has the error, and the <code>.jsonl</code> log in the results folder has the full response. The most common cause is a 403: the account can't add patrol types, event types or feature groups on the site. Fix the cause and run again; only what's still missing is created.</p>
+    </div>
+
+    <div class="error-block">
+      <p class="symptom">An item is listed as <em>Exists but differs</em></p>
+      <p>The site already has it, but not as the shared schema says (for example a field with another type, or a missing limit). The workflow never edits existing items, so change it in EarthRanger admin, then run again to check.</p>
+    </div>
+
+    <div class="error-block">
+      <p class="symptom">The <em>Template</em> row says a form "uses other fields" and the built-in layout is used</p>
+      <p>The template's form for that event type uses other field names than the shared schema, as on sites set up before it (e.g. Enonkishu's <code>Transect_ID</code>). A layout can only be copied when its fields are exactly the schema's, so Enarau's is used. The titles and icons still come from the template. Pick a template set up with the shared schema, or leave the template empty.</p>
+    </div>
+
+    <div class="error-block">
+      <p class="symptom">Species or team members show as failed</p>
+      <p>These choice lists are filled in by the site, never by the workflow. Add the species to <code>distancecountwildlife_species</code> and the team to <code>distancecountpatrol_teammembers</code> in EarthRanger, then run again.</p>
+    </div>
+
+    <div class="error-block">
+      <p class="symptom">The transect map is empty</p>
+      <p>The <code>DSC_Transects</code> feature group has no features yet. They are added once the transects are final, each named <code>&lt;prefix&gt;_&lt;n&gt;</code>.</p>
+    </div>
+
+    <div class="error-block">
+      <p class="symptom">I wanted to see what would be created first</p>
+      <p>This version creates as soon as it runs. Run <em>DSC Onboarding Check</em> on the site first: its failed checks are what DSC Setup would create.</p>
     </div>
 
     <h2>Developing</h2>
@@ -54,7 +86,7 @@
   </main>
 
   <footer class="site-footer">
-    <p>Dsc setup &middot; Wildlife Dynamics</p>
+    <p>DSC Setup &middot; Wildlife Dynamics</p>
   </footer>
 </body>
 </html>

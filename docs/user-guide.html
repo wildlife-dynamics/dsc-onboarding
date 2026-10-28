@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>User Guide · Dsc setup</title>
+  <title>User Guide · DSC Setup</title>
   <link rel="stylesheet" href="assets/style.css" />
 </head>
 <body>
   <header class="site-header">
     <div class="bar">
-      <a class="brand" href="index.html">Dsc setup</a>
+      <a class="brand" href="index.html">DSC Setup</a>
       <nav>
         <a href="index.html">Overview</a>
         <a href="user-guide.html" class="active">User Guide</a>
@@ -21,38 +21,75 @@
 
   <main>
     <h1>User Guide</h1>
-    <p class="lede">How to load Dsc setup, connect its data sources and fill in its settings.</p>
+    <p class="lede">How to load DSC Setup, connect its data sources and fill in its settings.</p>
 
     <h2>1. Load the workflow</h2>
-    <p>In the workflow runner, add a new template using this repository's URL, then select <strong>Dsc setup</strong> from the templates list.</p>
+    <p>In the workflow runner, add a new template using this repository's URL, then select <strong>DSC Setup</strong> from the templates list.</p>
 
     <h2>2. Data sources</h2>
-    <ul><li>Access to a <strong>EarthRanger</strong> data source, set up as a connection</li></ul>
+    <ul>
+      <li>An <strong>EarthRanger</strong> connection for the conservancy being set up. The account needs permission to add patrol types, event types and feature groups.</li>
+      <li>Optionally, a connection for a <strong>template conservancy</strong> (read-only access is enough).</li>
+    </ul>
 
     <h2>3. Settings</h2>
     <p>The run form asks for these. Fields with a default can be left as they are.</p>
-    <h3>Connect to EarthRanger</h3>
+    <p><strong>A run creates straight away:</strong> this version has no preview. To see what would be created without changing the site, run <em>DSC Onboarding Check</em> on it first.</p>
+    <h3>Conservancy</h3>
     <table>
       <thead><tr><th>Field</th><th>Description</th><th>Default</th></tr></thead>
-      <tbody><tr><td>Data source <em>(required)</em></td><td>Select one of your configured data sources.</td><td>—</td></tr></tbody>
+      <tbody><tr><td>Data source <em>(required)</em></td><td>The conservancy to set up.</td><td>—</td></tr></tbody>
     </table>
-    <h3>Set Up DSC</h3>
+    <h3>DSC Setup</h3>
     <table>
       <thead><tr><th>Field</th><th>Description</th><th>Default</th></tr></thead>
-      <tbody><tr><td>Template conservancy</td><td>The conservancy whose form layouts, field titles and icons the new setup copies. The fields and event types themselves are always the shared DSC schema. Leave empty to use Enarau&#x27;s.</td><td>—</td></tr></tbody>
+      <tbody><tr><td>Template conservancy</td><td>The conservancy whose look the new setup copies. The fields and event types themselves are always the shared DSC schema.</td><td>Empty: Enarau&#x27;s look</td></tr></tbody>
     </table>
     <h3>Set Workflow Details</h3>
     <table>
       <thead><tr><th>Field</th><th>Description</th><th>Default</th></tr></thead>
-      <tbody><tr><td>Workflow Name <em>(required)</em></td><td></td><td>—</td></tr></tbody>
+      <tbody><tr><td>Workflow Name <em>(required)</em></td><td>A name for this run.</td><td>—</td></tr></tbody>
     </table>
 
-    <h2>4. Run it and find the results</h2>
-    <p>The workflow writes its files to the results folder the runner gives it (<code>ECOSCOPE_WORKFLOWS_RESULTS</code>), and shows its dashboard when it finishes.</p>
+    <h3>Choosing a template</h3>
+    <p>A template only sets how the new setup <strong>looks</strong>: the event types' form layouts, field titles and descriptions, icons, priorities and geometry, and the patrol type's icon and priority. The fields always come from the shared schema (keys, types, required flags, choice lists, limits and event type values), so the new site passes the check whichever template you pick. The template site is only read.</p>
+    <ul>
+      <li><strong>Left empty:</strong> Enarau's look, from the copy in the task package.</li>
+      <li><strong>A form that uses other field names:</strong> that form falls back to Enarau's layout. For example, Enonkishu's MetaData form uses <code>Transect_ID</code>, <code>Team_members</code> and <code>Number_of_observers</code>. Titles and icons still come from the template.</li>
+      <li><strong>A template without a DSC setup:</strong> the missing parts fall back to Enarau's.</li>
+    </ul>
+    <p>The <em>Template</em> row of the setup table says which template was used and what fell back.</p>
+
+    <h2>4. Read the dashboard</h2>
+    <table>
+      <thead><tr><th>Panel</th><th>What it shows</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Tiles</strong></td><td>Created this run, Still to create, Checks failed, Warnings and Checks passing (%).</td></tr>
+        <tr><td><strong>Onboarding Progress</strong></td><td>Prefix → DSC setup → Species &amp; team → Transects → Mapping closed → Ready, with the current step highlighted. A site surveyed before the shared schema is marked <em>audit only</em>: its differences are for information, and nothing needs changing.</td></tr>
+        <tr><td><strong>What to Do Next</strong></td><td>What this run did, then one instruction per check that still fails.</td></tr>
+        <tr><td><strong>For DSC Analysis</strong></td><td>The Distance Count patrol type ID and the <code>DSC_Transects</code> feature group ID, ready to copy into DSC Analysis.</td></tr>
+        <tr><td><strong>DSC Checklist</strong></td><td>Every check, grouped by area with failures first. Its <em>This run</em> column says what this run did for each item: Created, Already there, …</td></tr>
+        <tr><td><strong>DSC Transects</strong></td><td>A map of the transect features and their names. Empty until the features are added.</td></tr>
+      </tbody>
+    </table>
+    <p>The files go to the results folder the runner gives the workflow (<code>ECOSCOPE_WORKFLOWS_RESULTS</code>):</p>
+    <ul>
+      <li><code>dsc_setup.csv</code>, the setup table;</li>
+      <li><code>dsc_checklist.csv</code>;</li>
+      <li>a <code>.jsonl</code> log of every request made while creating.</li>
+    </ul>
+
+    <h2>5. After the run</h2>
+    <ol>
+      <li>Follow <strong>What to Do Next</strong>.</li>
+      <li>Add species and team members to the <code>distancecountwildlife_species</code> and <code>distancecountpatrol_teammembers</code> choice lists in EarthRanger. The workflow never creates these.</li>
+      <li>Once the transects are final, add them as <code>DSC_Transects</code> features named <code>&lt;prefix&gt;_&lt;n&gt;</code>, with a matching choice for each.</li>
+      <li>Run the workflow again. Only what's still missing is created, and the checklist updates.</li>
+    </ol>
   </main>
 
   <footer class="site-footer">
-    <p>Dsc setup &middot; Wildlife Dynamics</p>
+    <p>DSC Setup &middot; Wildlife Dynamics</p>
   </footer>
 </body>
 </html>

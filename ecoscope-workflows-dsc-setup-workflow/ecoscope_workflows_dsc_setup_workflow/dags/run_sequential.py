@@ -7,9 +7,6 @@ from ecoscope.platform.tasks.io import persist_df as persist_df
 from ecoscope.platform.tasks.io import persist_text as persist_text
 from ecoscope.platform.tasks.io import set_er_connection as set_er_connection
 from ecoscope.platform.tasks.results import (
-    create_map_widget_single_view as create_map_widget_single_view,
-)
-from ecoscope.platform.tasks.results import (
     create_single_value_widget_single_view as create_single_value_widget_single_view,
 )
 from ecoscope.platform.tasks.results import (
@@ -24,16 +21,6 @@ from ecoscope.platform.tasks.skip import (
 )
 from ecoscope.platform.tasks.skip import any_is_empty_df as any_is_empty_df
 from ecoscope.platform.tasks.skip import never as never
-from ecoscope_workflows_ext_custom.tasks.results import (
-    create_geojson_layer as create_geojson_layer_1,
-)
-from ecoscope_workflows_ext_custom.tasks.results import (
-    create_text_layer_pydeck as create_text_layer_pydeck_1,
-)
-from ecoscope_workflows_ext_custom.tasks.results import draw_map as draw_map_1
-from ecoscope_workflows_ext_custom.tasks.results import (
-    set_base_maps_pydeck as set_base_maps_pydeck,
-)
 from ecoscope_workflows_ext_distance_sample_counts.tasks.onboarding import (
     check_dsc_setup as check_dsc_setup,
 )
@@ -61,12 +48,6 @@ from ecoscope_workflows_ext_distance_sample_counts.tasks.onboarding import (
 from ecoscope_workflows_ext_distance_sample_counts.tasks.onboarding import (
     summarize_dsc_next_steps as summarize_dsc_next_steps,
 )
-from ecoscope_workflows_ext_distance_sample_counts.tasks.onboarding import (
-    transect_labels as transect_labels,
-)
-from ecoscope_workflows_ext_distance_sample_counts.tasks.onboarding import (
-    transect_view_state as transect_view_state,
-)
 from ecoscope_workflows_ext_distance_sample_counts.tasks.results import (
     draw_status_table as draw_status_table,
 )
@@ -79,6 +60,23 @@ from .. import metadata as _metadata
 def main(params: dict[str, Any], validate_params_schema: bool = True):
     if validate_params_schema:
         _validate(params, _metadata.load_params_schema())
+
+    workflow_details = (
+        task(set_workflow_details)
+        .validate()
+        .set_task_instance_id("workflow_details")
+        .handle_errors()
+        .with_tracing()
+        .skipif(
+            conditions=[
+                any_is_empty_df,
+                any_dependency_skipped,
+            ],
+            unpack_depth=1,
+        )
+        .partial(**(params.get("workflow_details") or {}))
+        .call()
+    )
 
     er_connection = (
         task(set_er_connection)
@@ -250,72 +248,6 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
         .call()
     )
 
-    transect_label_points = (
-        task(transect_labels)
-        .validate()
-        .set_task_instance_id("transect_label_points")
-        .handle_errors()
-        .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-            ],
-            unpack_depth=1,
-        )
-        .partial(transects=transects, **(params.get("transect_label_points") or {}))
-        .call()
-    )
-
-    transect_view = (
-        task(transect_view_state)
-        .validate()
-        .set_task_instance_id("transect_view")
-        .handle_errors()
-        .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-            ],
-            unpack_depth=1,
-        )
-        .partial(
-            transects=transects, max_zoom=15, **(params.get("transect_view") or {})
-        )
-        .call()
-    )
-
-    transect_lines_layer = (
-        task(create_geojson_layer_1)
-        .validate()
-        .set_task_instance_id("transect_lines_layer")
-        .handle_errors()
-        .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-            ],
-            unpack_depth=1,
-        )
-        .partial(
-            geodataframe=transects,
-            data_url=None,
-            layer_style={
-                "filled": False,
-                "stroked": True,
-                "get_line_color": [26, 79, 156],
-                "get_line_width": 3,
-                "line_width_units": "pixels",
-                "opacity": 0.9,
-            },
-            legend={
-                "title": "",
-                "values": [{"label": "DSC_Transects", "color": "#1a4f9c"}],
-            },
-            **(params.get("transect_lines_layer") or {}),
-        )
-        .call()
-    )
-
     persist_checklist = (
         task(persist_df)
         .validate()
@@ -335,33 +267,6 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             filename="dsc_checklist",
             filetype="csv",
             **(params.get("persist_checklist") or {}),
-        )
-        .call()
-    )
-
-    transect_names_layer = (
-        task(create_text_layer_pydeck_1)
-        .validate()
-        .set_task_instance_id("transect_names_layer")
-        .handle_errors()
-        .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
-        .partial(
-            geodataframe=transect_label_points,
-            data_url=None,
-            layer_style={
-                "get_text": "label",
-                "get_size": 13,
-                "get_color": [33, 37, 41, 255],
-            },
-            legend=None,
-            **(params.get("transect_names_layer") or {}),
         )
         .call()
     )
@@ -500,63 +405,6 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             unpack_depth=1,
         )
         .partial(checklist=dsc_checklist, **(params.get("analysis_ids") or {}))
-        .call()
-    )
-
-    base_map_defs = (
-        task(set_base_maps_pydeck)
-        .validate()
-        .set_task_instance_id("base_map_defs")
-        .handle_errors()
-        .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
-        .partial(
-            base_maps=[
-                {
-                    "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
-                    "opacity": 1,
-                    "max_zoom": 20,
-                },
-                {
-                    "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-                    "opacity": 0.5,
-                    "max_zoom": 20,
-                },
-            ],
-            **(params.get("base_map_defs") or {}),
-        )
-        .call()
-    )
-
-    transect_map = (
-        task(draw_map_1)
-        .validate()
-        .set_task_instance_id("transect_map")
-        .handle_errors()
-        .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
-        .partial(
-            geo_layers=[transect_lines_layer, transect_names_layer],
-            tile_layers=base_map_defs,
-            view_state=transect_view,
-            legend_style={"placement": "bottom-right"},
-            static=False,
-            title=None,
-            max_zoom=15,
-            **(params.get("transect_map") or {}),
-        )
         .call()
     )
 
@@ -737,28 +585,6 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
         .call()
     )
 
-    persist_transect_map = (
-        task(persist_text)
-        .validate()
-        .set_task_instance_id("persist_transect_map")
-        .handle_errors()
-        .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
-        .partial(
-            text=transect_map,
-            root_path=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
-            filename="dsc_transect_map.html",
-            **(params.get("persist_transect_map") or {}),
-        )
-        .call()
-    )
-
     checklist_widget = (
         task(create_table_widget_single_view)
         .validate()
@@ -821,43 +647,6 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
         .call()
     )
 
-    workflow_details = (
-        task(set_workflow_details)
-        .validate()
-        .set_task_instance_id("workflow_details")
-        .handle_errors()
-        .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
-        .partial(description="", **(params.get("workflow_details") or {}))
-        .call()
-    )
-
-    transect_map_widget = (
-        task(create_map_widget_single_view)
-        .validate()
-        .set_task_instance_id("transect_map_widget")
-        .handle_errors()
-        .with_tracing()
-        .skipif(
-            conditions=[
-                never,
-            ],
-            unpack_depth=1,
-        )
-        .partial(
-            title="DSC Transects",
-            data=persist_transect_map,
-            **(params.get("transect_map_widget") or {}),
-        )
-        .call()
-    )
-
     dashboard = (
         task(gather_dashboard)
         .validate()
@@ -884,7 +673,6 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
                 next_steps_widget,
                 analysis_ids_widget,
                 checklist_widget,
-                transect_map_widget,
             ],
             **(params.get("dashboard") or {}),
         )
